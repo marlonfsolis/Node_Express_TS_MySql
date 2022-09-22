@@ -4,7 +4,9 @@ import {dbDebug} from "../startup/debuggers";
 import {IPermission} from "../models/Permission";
 import {IResult, ResultOk, ResultError, Result} from "../shared/Result";
 import {Err} from "../shared/Err";
-import {IOutputResult, getOutputResult, getData} from "../shared/SqlResult";
+import {IOutputResult} from "../shared/SqlResult";
+import db from "../shared/Database";
+
 
 
 export default class PermissionRepository
@@ -21,18 +23,17 @@ export default class PermissionRepository
     async getPermissions(): Promise<IResult<IPermission[]>> {
         let permissions = [] as IPermission[];
 
-        const sql = "CALL sp_permissions_readlist(?,?,?,?,@result);";
-        const [rows, fields] = await this.pool.execute(sql, [0,0,null,null]);
-        const [resultRows] = await this.pool.execute("SELECT @result;");
-        const result = getOutputResult(resultRows);
+        const inValues = [0,0,null,null];
+        const r = await db.call("sp_permissions_readlist",inValues,["@result"], this.pool);
+        const callResult = r.getOutputVal<IOutputResult>("@result");
 
-        if (!result.success) {
+        if (!callResult.success) {
             return new ResultError<IPermission[]>(
-                new Err(result.msg, "sp_permissions_readlist", result.errorLogId.toString())
+                new Err(callResult.msg, "sp_permissions_readlist", callResult.errorLogId.toString())
             );
         }
-        permissions = getData<IPermission[]>(rows);
 
+        permissions = r.getData<IPermission>(0);
         return new ResultOk<IPermission[]>(permissions);
     }
 }
