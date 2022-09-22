@@ -1,8 +1,7 @@
 import {Pool} from "mysql2/promise";
 
-import {dbDebug} from "../startup/debuggers";
 import {IPermission} from "../models/Permission";
-import {IResult, ResultOk, ResultError, Result} from "../shared/Result";
+import {IResult, ResultOk, ResultError} from "../shared/Result";
 import {Err} from "../shared/Err";
 import {IOutputResult} from "../shared/SqlResult";
 import db from "../shared/Database";
