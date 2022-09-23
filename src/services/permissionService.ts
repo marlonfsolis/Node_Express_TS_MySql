@@ -3,7 +3,6 @@ import {Pool} from "mysql2/promise";
 import {IResult, ResultError} from "../shared/Result";
 import {IPermission} from "../models/Permission";
 import PermissionRepository from "../repositories/permissionRepository";
-import {Err, IErr} from "../shared/Err";
 
 export default class PermissionService
 {
@@ -16,19 +15,25 @@ export default class PermissionService
     }
 
     /**
-     * Save a permission object
+     * Get a permission list
      */
     async getPermissions(): Promise<IResult<IPermission[]>> {
         try {
             return await this.permRepo.getPermissions();
         } catch (err) {
-            console.log(err);
-            return new ResultError(
-                new Err(
-                    `Error - Something bad happen. ${JSON.stringify(err)}`,
-                    `permissionService.getPermissions`
-                )
-            );
+            return ResultError.getDefaultError<IPermission[]>(err,`permissionService.getPermissions`);
+        }
+    }
+
+
+    /**
+     * Create a permission
+     */
+    async createPermission(p:IPermission): Promise<IResult<IPermission>> {
+        try {
+            return await this.permRepo.createPermission(p);
+        } catch (err) {
+            return ResultError.getDefaultError<IPermission>(err,`permissionService.getPermissions`);
         }
     }
 }

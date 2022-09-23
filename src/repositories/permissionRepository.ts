@@ -35,4 +35,22 @@ export default class PermissionRepository
         permissions = r.getData<IPermission>(0);
         return new ResultOk<IPermission[]>(permissions);
     }
+
+    /** Create a permission */
+    async createPermission(p:IPermission): Promise<IResult<IPermission>> {
+        let permission: IPermission|undefined;
+
+        const inValues = [JSON.stringify(p)];
+        const r = await db.call("sp_permissions_write", inValues,["@result"], this.pool);
+        const callResult  = r.getOutputVal<IOutputResult>("@result");
+
+        if (!callResult.success) {
+            return new ResultError(
+                new Err(callResult.msg, "sp_permissions_write", callResult.errorLogId.toString())
+            )
+        }
+
+        permission = r.getData<IPermission>(0)[0];
+        return new ResultOk(permission);
+    }
 }
