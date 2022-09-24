@@ -33,7 +33,30 @@ export default class PermissionService
         try {
             return await this.permRepo.createPermission(p);
         } catch (err) {
-            return ResultError.getDefaultError<IPermission>(err,`permissionService.getPermissions`);
+            return ResultError.getDefaultError<IPermission>(err,`permissionService.createPermission`);
+        }
+    }
+
+
+    /**
+     * Delete a permission
+     */
+    async deletePermission(pName:string): Promise<IResult<IPermission>> {
+        try {
+            return await this.permRepo.deletePermission(pName);
+        } catch (err) {
+            return ResultError.getDefaultError<IPermission>(err,`permissionService.deletePermission`);
+        }
+    }
+
+    /**
+     * Get a permission
+     */
+    async getPermission(pName:string): Promise<IResult<IPermission>> {
+        try {
+            return await this.permRepo.getPermission(pName);
+        } catch (err) {
+            return ResultError.getDefaultError<IPermission>(err,`permissionService.getPermission`);
         }
     }
 }

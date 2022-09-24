@@ -53,4 +53,40 @@ export default class PermissionRepository
         permission = r.getData<IPermission>(0)[0];
         return new ResultOk(permission);
     }
+
+    /** Delete a permission */
+    async deletePermission(pName:string): Promise<IResult<IPermission>> {
+        let permission: IPermission|undefined;
+
+        const inValues = [pName];
+        const r = await db.call("sp_permissions_delete", inValues,["@result"], this.pool);
+        const callResult  = r.getOutputVal<IOutputResult>("@result");
+
+        if (!callResult.success) {
+            return new ResultError(
+                new Err(callResult.msg, "sp_permissions_delete", callResult.errorLogId.toString())
+            )
+        }
+
+        permission = r.getData<IPermission>(0)[0];
+        return new ResultOk(permission);
+    }
+
+    /** Get a permission */
+    async getPermission(pName:string): Promise<IResult<IPermission>> {
+        let permission: IPermission|undefined;
+
+        const inValues = [pName];
+        const r = await db.call("sp_permissions_read", inValues,["@result"], this.pool);
+        const callResult  = r.getOutputVal<IOutputResult>("@result");
+
+        if (!callResult.success) {
+            return new ResultError(
+                new Err(callResult.msg, "sp_permissions_read", callResult.errorLogId.toString())
+            )
+        }
+
+        permission = r.getData<IPermission>(0)[0];
+        return new ResultOk(permission);
+    }
 }
