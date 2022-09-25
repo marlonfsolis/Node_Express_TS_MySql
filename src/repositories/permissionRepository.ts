@@ -41,7 +41,7 @@ export default class PermissionRepository
         let permission: IPermission|undefined;
 
         const inValues = [JSON.stringify(p)];
-        const r = await db.call("sp_permissions_write", inValues,["@result"], this.pool);
+        const r = await db.call("sp_permissions_create", inValues,["@result"], this.pool);
         const callResult  = r.getOutputVal<IOutputResult>("@result");
 
         if (!callResult.success) {
