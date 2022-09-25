@@ -8,6 +8,8 @@ import {
     HttpResponseOk
 } from "../shared/HttpResponse";
 import {IPermission} from "../models/Permission";
+import {validationResult} from "express-validator";
+import {IErr} from "../shared/Err";
 
 /** Get permission list. */
 export const getPermissions = async (req:Request, res:Response) => {
@@ -24,6 +26,12 @@ export const getPermissions = async (req:Request, res:Response) => {
 
 /** Post a permission */
 export const createPermission = async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const errs = errors.array({ onlyFirstError: false }) as IErr[];
+        return new HttpResponseBadRequest(res, errs);
+    }
+
     const permServ = new PermissionService(req.app.locals.pool);
 
     const p = req.body as IPermission;

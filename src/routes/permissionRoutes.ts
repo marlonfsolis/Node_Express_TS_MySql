@@ -1,6 +1,7 @@
 import {Router} from "express";
 
 import * as PermissionController from "../controllers/permissionController";
+import {permissionValidator} from "../models/Permission";
 
 
 const router = Router();
@@ -9,7 +10,7 @@ const router = Router();
 router.get('/', PermissionController.getPermissions);
 
 /* POST a permission */
-router.post('/', PermissionController.createPermission);
+router.post('/', permissionValidator(), PermissionController.createPermission);
 
 /* DELETE a permission */
 router.delete('/:name', PermissionController.deletePermission);
