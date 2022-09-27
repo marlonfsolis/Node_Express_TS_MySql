@@ -1,4 +1,5 @@
 import {Request, Response} from "express";
+import {validationResult} from "express-validator";
 
 import PermissionService from "../services/permissionService";
 import {
@@ -8,7 +9,6 @@ import {
     HttpResponseOk
 } from "../shared/HttpResponse";
 import {IPermission} from "../models/Permission";
-import {validationResult} from "express-validator";
 import {IErr} from "../shared/Err";
 
 /** Get permission list. */
